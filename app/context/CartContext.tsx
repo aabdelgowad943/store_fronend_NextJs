@@ -1,18 +1,15 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import {
-  fetchCartData as fetchData,
-  removeItemFromCart as removeFromCart,
-} from "@/utils/actions";
+import { fetchCartData as fetchData } from "@/utils/actions";
 import { Cart } from "@/utils/types";
 
 type CartContextType = {
   cartItems: Cart[];
   totalPrice: number;
   numItems: number;
-  fetchCart: (userId: string) => Promise<void>; // Modify to accept userId
-  removeItemFromCart: (id: string) => Promise<boolean>;
-  setCartItems: (items: Cart[]) => void; // Expose setCartItems to handle quantity changes
+  fetchCart: (userId: string) => Promise<void>;
+  removeItemFromCart: (id: string) => void;
+  setCartItems: (items: Cart[]) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -21,7 +18,15 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartItems, setCartItems] = useState<Cart[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  // Recalculate total price whenever cartItems are updated
+  // Fetch cart from localStorage or initialize as empty
+  useEffect(() => {
+    const savedCartItems = localStorage.getItem("cartItems");
+    if (savedCartItems) {
+      setCartItems(JSON.parse(savedCartItems));
+    }
+  }, []);
+
+  // Calculate total price whenever cartItems change
   useEffect(() => {
     const calculateTotalPrice = (items: Cart[]) => {
       const total = items.reduce(
@@ -31,33 +36,33 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       setTotalPrice(total);
     };
     calculateTotalPrice(cartItems);
+
+    // Persist cartItems to localStorage
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Fetch the user's cart from API
   const fetchCart = async (userId: string) => {
-    // Accept userId as an argument
     try {
-      const data = await fetchData(userId); // Pass userId to the fetch function
-      setCartItems(data); // Set the fetched cart data
+      const data = await fetchData(userId);
+      setCartItems(data);
     } catch (error) {
-      // console.error("Failed to fetch cart data", error);
-      // Optional: Add a toast notification for errors here
+      console.error("Failed to fetch cart data", error);
     }
   };
 
-  const removeItemFromCart = async (id: string): Promise<boolean> => {
-    try {
-      const success = await removeFromCart(id);
-      if (success) {
-        const updatedCart = cartItems.filter((item) => item.id !== id);
-        setCartItems(updatedCart);
-      }
-      return success;
-    } catch (error) {
-      // console.error("Failed to remove item", error);
-      return false;
-    }
+  // Remove an item from the cart and update both the state and localStorage
+  const removeItemFromCart = (id: string) => {
+    const updatedItems = cartItems.filter((item) => item.id !== id);
+
+    // Update the cartItems state immediately
+    setCartItems(updatedItems);
+
+    // Persist the updated cartItems to localStorage
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
   };
 
+  // Calculate the total number of items in the cart
   const numItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -68,7 +73,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         numItems,
         fetchCart,
         removeItemFromCart,
-        setCartItems, // Expose setCartItems for external use
+        setCartItems,
       }}
     >
       {children}

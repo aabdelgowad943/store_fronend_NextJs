@@ -391,7 +391,7 @@ export const fetchCartData = async (userId: string) => {
 export const removeItemFromCart = async (id: string) => {
   try {
     // Send DELETE request to remove the item from the cart
-    const response = await fetch(`http://localhost:4000/cart/${id}`, {
+    const response = await fetch(`${apiUrl}/cart/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

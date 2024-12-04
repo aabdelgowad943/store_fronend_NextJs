@@ -1,45 +1,22 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import {
-  fetchCartData,
-  removeItemFromCart,
-  checkVoucherCode,
-} from "@/utils/actions"; // Add 'checkVoucherCode' utility
-import { Cart } from "@/utils/types";
+import { useCart } from "@/app/context/CartContext"; // Import CartContext
+import { removeItemFromCart } from "@/utils/actions"; // Import removeItemFromCart function
 import { toast } from "@/hooks/use-toast";
-import { formatCurrency } from "@/utils/format";
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState<Cart[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const { cartItems, setCartItems, totalPrice } = useCart(); // Access CartContext
   const [error, setError] = useState<string>("");
   const [showPopup, setShowPopup] = useState(false);
   const [voucherCode, setVoucherCode] = useState<string>("");
   const [voucherMessage, setVoucherMessage] = useState<string>("");
 
+  // If cartItems is empty, give a message or take action
   useEffect(() => {
-    const fetchCart = async () => {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        console.warn("No User ID found in localStorage.");
-        setError("User ID not found in local storage.");
-        return;
-      }
-      try {
-        const data = await fetchCartData(userId);
-        setCartItems(data);
-      } catch (error) {
-        console.error("Failed to fetch cart data:", error);
-        toast({ description: `Failed to fetch cart data: ${error}` });
-      }
-    };
-
-    fetchCart();
-  }, []);
-
-  useEffect(() => {
-    calculateTotalPrice(cartItems);
+    if (!cartItems) {
+      setError("No cart items found");
+    }
   }, [cartItems]);
 
   const handleQuantityChange = (id: string, quantity: number) => {
@@ -50,20 +27,20 @@ const CartPage = () => {
   };
 
   const removeItem = async (id: string) => {
-    const success = await removeItemFromCart(id);
-    if (success) {
-      setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    } else {
+    try {
+      const success = await removeItemFromCart(id); // Call the removeItemFromCart utility
+      if (success) {
+        // Remove item from local state if successful in the database
+        setCartItems((prevItems) =>
+          prevItems.filter((item): boolean => item.id !== id)
+        );
+        toast({ description: "Item removed from cart" });
+      } else {
+        toast({ description: "Failed to remove item from the cart" });
+      }
+    } catch (error) {
       toast({ description: "Failed to remove item from the cart" });
     }
-  };
-
-  const calculateTotalPrice = (items: Cart[]) => {
-    const total = items.reduce(
-      (sum, item) => sum + item.book.price * item.quantity,
-      0
-    );
-    setTotalPrice(total);
   };
 
   const handleCheckout = async () => {
@@ -73,11 +50,14 @@ const CartPage = () => {
     }
 
     try {
-      const response = await checkVoucherCode(voucherCode); // Call the utility to check the voucher
-      if (response.isValid) {
-        setVoucherMessage("Yes, the voucher is valid and applied!");
+      // Implement voucher code validation logic here
+      setVoucherMessage("Voucher is being validated...");
+
+      // Sample check (replace with actual validation logic)
+      if (voucherCode === "VALID") {
+        setVoucherMessage("Voucher code applied successfully!");
       } else {
-        setVoucherMessage("معذرةً الوقت مأسعفنيش أخلص كل حاجة");
+        setVoucherMessage("Invalid voucher code");
       }
     } catch (error) {
       console.error("Error validating voucher code:", error);
@@ -185,7 +165,7 @@ const CartPage = () => {
       {/* Popup for Voucher Code */}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white   p-6 rounded-lg shadow-lg w-full max-w-md">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <h2 className="text-xl text-black font-bold mb-4">
               Enter Voucher Code
             </h2>
