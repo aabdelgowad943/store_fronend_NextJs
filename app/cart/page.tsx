@@ -185,11 +185,13 @@ const CartPage = () => {
       {/* Popup for Voucher Code */}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Enter Voucher Code</h2>
+          <div className="bg-white   p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl text-black font-bold mb-4">
+              Enter Voucher Code
+            </h2>
             <input
               type="text"
-              className="border border-gray-300 w-full px-4 py-2 rounded-md mb-4"
+              className="border border-gray-300 bg-white outline-none text-black w-full px-4 py-2 rounded-md mb-4"
               placeholder="Voucher Code"
               value={voucherCode}
               onChange={(e) => setVoucherCode(e.target.value)}
@@ -206,7 +208,7 @@ const CartPage = () => {
               </p>
             )}
             <button
-              className="w-full bg-gray-300 text-black py-2 rounded-md hover:bg-gray-400 transition"
+              className="w-full bg-red-500 hover:bg-red-600 transition-all text-white py-2 rounded-md "
               onClick={closePopup}
             >
               Close
