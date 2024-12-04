@@ -599,3 +599,15 @@ export const checkVoucherCode = async (code: any) => {
   });
   return response.json(); // Expected: { isValid: boolean }
 };
+// ----------------------------------------------------------------------
+
+// utils/getUserIcon.ts
+export const getCurrentUser = async () => {
+  try {
+    const email = localStorage.getItem("email"); // Ensure this key matches how it's stored
+    return email || null;
+  } catch (error) {
+    console.error("Error retrieving user email from localStorage:", error);
+    return null;
+  }
+};

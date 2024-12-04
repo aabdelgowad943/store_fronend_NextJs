@@ -39,7 +39,8 @@ export default function Login() {
         localStorage.setItem("sellerId", response.sellerId);
         localStorage.setItem("role", response.role || ""); // Save the role
         localStorage.setItem("userId", response.id); // Save the role
-        console.log("id is", response.id);
+        localStorage.setItem("email", response.email); // Save the role
+        // console.log("user name is", response.email);
 
         if (response.role === "ADMIN") {
           router.push("/admin/sellers");

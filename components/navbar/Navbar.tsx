@@ -8,6 +8,7 @@ import DarkMode from "./DarkMode";
 import LinksDropdown from "./LinksDropdown";
 import { usePathname } from "next/navigation";
 import Search from "./TestSearch";
+// import UserIcon from "./UserIcon";
 function Navbar() {
   const pathname = usePathname();
   // Check if the URL contains "dashboard" or "user-dashboard"
@@ -29,6 +30,7 @@ function Navbar() {
           <CartButton />
           <DarkMode />
           <LinksDropdown />
+          {/* <UserIcon /> */}
         </div>
       </Container>
     </nav>

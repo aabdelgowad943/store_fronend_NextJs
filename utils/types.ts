@@ -79,4 +79,5 @@ export interface LoginResponse {
   role?: string;
   sellerId: string;
   id: string;
+  email: string;
 }

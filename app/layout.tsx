@@ -6,6 +6,7 @@ import Providers from "./providers";
 import Footer from "@/components/footer/page";
 import { CartProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext";
+import CartButton from "@/components/navbar/CartButton";
 
 export const metadata: Metadata = {
   title: "Store frontend",

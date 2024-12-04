@@ -9,6 +9,8 @@ import { LuAlignLeft } from "react-icons/lu";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { links } from "@/utils/links";
+import UserIcon from "./UserIcon";
+// import UserIcon from "./UserIcon";
 
 // Function to get the user role from localStorage
 // Function to get the user role from localStorage
@@ -66,6 +68,8 @@ function LinksDropdown() {
     return true;
   });
 
+  const email = localStorage.getItem("email");
+
   return (
     <>
       {/* Unauthenticated Dropdown (Login/Register) */}
@@ -100,12 +104,17 @@ function LinksDropdown() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex gap-4 max-w-[100px]">
               <LuAlignLeft className="w-6 h-6" />
+              <UserIcon />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-48 p-2 border shadow-md rounded-md"
             align="start"
           >
+            <DropdownMenuItem>
+              <Link href={"/about"}>{email} </Link>
+            </DropdownMenuItem>
+            <hr />
             {/* Render the links for authenticated users */}
             {filteredLinks.map((link) => (
               <DropdownMenuItem key={link.href}>
