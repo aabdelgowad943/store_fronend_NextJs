@@ -1,5 +1,3 @@
-// app/profile/[username]/page.tsx
-
 import { fetchSellerByUsername } from "@/utils/actions"; // Import the new function
 import { notFound } from "next/navigation";
 
@@ -8,7 +6,10 @@ interface SellerProfileProps {
 }
 
 async function SellerProfile({ params }: SellerProfileProps) {
-  const { username } = params;
+  const awaitedParams = await params; // Await params to resolve before accessing its properties
+  const { username } = awaitedParams;
+
+  // Fetch the seller data based on the username
   const sellerData = await fetchSellerByUsername(username);
 
   // Handle case where seller is not found
@@ -23,7 +24,10 @@ async function SellerProfile({ params }: SellerProfileProps) {
         <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-300">
           {/* Assuming sellerData has a profile image URL */}
           <img
-            src={sellerData.profileImage || "/default-avatar.png"} // Default image if no profile image
+            src={
+              sellerData.profileImage ||
+              "https://images.pexels.com/photos/4506436/pexels-photo-4506436.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            } // Default image if no profile image
             alt={sellerData.username}
             className="object-cover w-full h-full"
           />

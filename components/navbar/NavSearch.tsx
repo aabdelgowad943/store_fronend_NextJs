@@ -18,7 +18,7 @@ function NavSearch() {
       params.delete("search");
     }
     replace(`/search-results?${params.toString()}`);
-  }, 3000);
+  }, 100);
 
   useEffect(() => {
     if (!searchParams.get("search")) {

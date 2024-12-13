@@ -10,9 +10,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { links } from "@/utils/links";
 import UserIcon from "./UserIcon";
-// import UserIcon from "./UserIcon";
 
-// Function to get the user role from localStorage
 // Function to get the user role from localStorage
 const getUserRole = (): "ADMIN" | "SELLER" | "BUYER" | null => {
   const role = localStorage.getItem("role");
@@ -20,8 +18,6 @@ const getUserRole = (): "ADMIN" | "SELLER" | "BUYER" | null => {
     ? (role as "ADMIN" | "SELLER" | "BUYER")
     : null;
 };
-
-// Filter links for authenticated users based on their role
 
 // Function to check if the user is logged in (i.e., has a token)
 const isLoggedIn = (): boolean => {
@@ -69,7 +65,7 @@ function LinksDropdown() {
   });
 
   const email = localStorage.getItem("email");
-
+  const userId = localStorage.getItem("userId");
   return (
     <>
       {/* Unauthenticated Dropdown (Login/Register) */}
@@ -112,7 +108,8 @@ function LinksDropdown() {
             align="start"
           >
             <DropdownMenuItem>
-              <Link href={"/about"}>{email} </Link>
+              {/* Redirect to profile page with userId */}
+              <Link href={`/user-profile/${userId}`}>{email}</Link>
             </DropdownMenuItem>
             <hr />
             {/* Render the links for authenticated users */}
@@ -128,7 +125,7 @@ function LinksDropdown() {
               onClick={handleLogout}
               className="cursor-pointer text-red-500"
             >
-              <Link href={"/auth/login"}>Logout </Link>
+              <Link href={"/"}>Logout </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

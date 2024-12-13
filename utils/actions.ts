@@ -11,6 +11,27 @@ import {
 
 const apiUrl = "http://localhost:4000";
 
+// src/actions.tsx
+export async function fetchUserById(userId: string) {
+  try {
+    const response = await fetch(`${apiUrl}/user/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+    const data = await response.json();
+
+    return data.data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Unable to retrieve user details");
+  }
+}
+
 export const fetchFeaturedProducts = async (): Promise<[]> => {
   try {
     const response = await fetch(`${apiUrl}/book`); // Replace with your API endpoint
@@ -275,13 +296,10 @@ export const fetchSellerByUsername = async (
     if (!seller) {
       throw new Error("Seller not found");
     }
-
-    // console.log("seller is", seller);
-
     return seller;
   } catch (error) {
     console.error(error);
-    return null; // Return null if an error occurs or no seller is found
+    return null;
   }
 };
 // ----------------------------------------------Get Seller by user name---------------------------------------------
