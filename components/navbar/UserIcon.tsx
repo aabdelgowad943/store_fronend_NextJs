@@ -1,8 +1,6 @@
-// // components/UserIcon.tsx
 "use client";
-
 import { useState, useEffect } from "react";
-import { getCurrentUser } from "@/utils/actions";
+// import { getCurrentUser } from "@/utils/actions";
 import { LuUser2 } from "react-icons/lu";
 
 const UserIcon = () => {
@@ -13,7 +11,7 @@ const UserIcon = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const email = await getCurrentUser();
+        const email = await localStorage.getItem("email");
         if (email) {
           setUser({
             email,

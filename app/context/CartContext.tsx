@@ -18,11 +18,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cartItems, setCartItems] = useState<Cart[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  // Fetch cart from localStorage or initialize as empty
   useEffect(() => {
-    const savedCartItems = localStorage.getItem("cartItems");
-    if (savedCartItems) {
-      setCartItems(JSON.parse(savedCartItems));
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      fetchCart(userId);
     }
   }, []);
 

@@ -260,20 +260,24 @@ export const getProductById = async (productId: any) => {
 
 // ------------------------------------------------Get All Sellers---------------------------------------------
 export const fetchSellers = async (): Promise<User[]> => {
+  // console.log("Fetching sellers...");
   try {
-    const response = await fetch(`${apiUrl}/user`); // Replace with your actual API endpoint
+    const response = await fetch(`${apiUrl}/user`);
     const result = await response.json();
+    // console.log("API response:", result);
 
     if (result.success) {
       return result.data.filter((user: User) => user.role === "SELLER");
     } else {
+      console.error("Fetch failed:", result);
       throw new Error("Failed to fetch sellers");
     }
   } catch (error) {
-    console.error(error);
-    throw new Error("An error occurred while fetching sellers");
+    console.error("Fetch error:", error);
+    throw error;
   }
 };
+
 // -----------------------------------------------Get All Sellers----------------------------------------------
 
 // ----------------------------------------------Get Seller by user name-----------------------------------------------
@@ -397,6 +401,8 @@ export const fetchCartData = async (userId: string) => {
   }
   const data = await response.json();
   if (data.success) {
+    // console.log(data.data);
+
     return data.data; // Return the array of cart items
   } else {
     throw new Error(data.message || "Failed to fetch cart data");
@@ -575,7 +581,7 @@ export const fetchVouchersBySellerId = async (sellerId: string) => {
     }
 
     const data = await response.json();
-    console.log("data");
+    // console.log("data");
 
     return data.data; // Assuming the books are in the 'data' field
   } catch (error) {
@@ -618,14 +624,57 @@ export const checkVoucherCode = async (code: any) => {
   return response.json(); // Expected: { isValid: boolean }
 };
 // ----------------------------------------------------------------------
+// export const getCurrentUser = async () => {
+//   try {
+//     const email = localStorage.getItem("email"); // Ensure this key matches how it's stored
+//     return email || null;
+//   } catch (error) {
+//     console.error("Error retrieving user email from localStorage:", error);
+//     return null;
+//   }
+// };
 
-// utils/getUserIcon.ts
-export const getCurrentUser = async () => {
+// export const getCurrentUser = async () => {
+//   try {
+//     if (typeof window !== "undefined") {
+//       const email = localStorage.getItem("email");
+//       return email || null;
+//     } else {
+//       console.warn("localStorage is not available on the server.");
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error("Error retrieving user email from localStorage:", error);
+//     return null;
+//   }
+// };
+
+// actions.ts
+
+import axios from "axios";
+
+// Function to update cart quantity
+export const updateCartQuantity = async (id: string, quantity: number) => {
   try {
-    const email = localStorage.getItem("email"); // Ensure this key matches how it's stored
-    return email || null;
+    const response = await axios.patch(`${apiUrl}/cart/${id}`, {
+      quantity,
+    });
+
+    if (response.status === 200) {
+      return {
+        success: true,
+        data: response.data, // The updated cart item data
+      };
+    } else {
+      return {
+        success: false,
+        message: "Failed to update quantity",
+      };
+    }
   } catch (error) {
-    console.error("Error retrieving user email from localStorage:", error);
-    return null;
+    return {
+      success: false,
+      message: "An error occurred while updating the cart quantity",
+    };
   }
 };

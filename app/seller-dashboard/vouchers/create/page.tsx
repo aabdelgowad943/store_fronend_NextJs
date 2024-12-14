@@ -66,7 +66,7 @@ function CreateVoucher() {
                   id="bookId"
                   className="block w-full border p-2 rounded-md"
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select a book
                   </option>
                   {books.map((book) => (
